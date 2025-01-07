@@ -20,8 +20,6 @@ function divide(dividend, divisor) {
     }
 }
 
-/* button handlers */
-
 let operator = null;
 let operandOne = null;
 let operandTwo = null;
@@ -49,28 +47,47 @@ function operate(operandOne, operator, operandTwo) {
 const allButtons = document.querySelectorAll("button");
 
 allButtons.forEach((button) => button.addEventListener("click", () => {
-    handleButtonClick(button);
-    populateCurrentDisplay();
+    if ((operandTwo === 0) && (operator === "divide")) {
+        populateCurrentDisplay(true);
+        handleAllClearButtonClick();
+    } else {
+        handleButtonClick(button);
+        populateCurrentDisplay(false);
+    }
 }));
 
-function populateCurrentDisplay() {
+/* display */
+
+function populateCurrentDisplay(error = false) {
     let value;
-    if (operator === null) {
-        value = operandOne || 0;
+
+    if (!error) {
+        if (operator === null) {
+            value = operandOne ?? 0;
+        } else {
+            value = operandTwo ?? operandOne;
+        }
     } else {
-        value = operandTwo || operandOne;
+        value = "woah there...";
     }
+
     const currentDisplay = document.querySelector(".display .current");
     currentDisplay.textContent = value;
 }
 
+/* calculation button handlers */
+
 function handleButtonClick (button) {
     if (button.classList.contains("operand")) {
         handleOperandButtonClick(button);
-        console.log(`operand ${button.value} was clicked`);
+        console.log(`operand ${Number(button.value)} was clicked`);
     } else if (button.classList.contains("operator")) {
         handleOperatorButtonClick(button);
         console.log(`operator ${button.value} was clicked`);
+    } else if (button.classList.contains("CE")) {
+        handleClearEntryButtonClick();
+    } else if (button.classList.contains("AC")) {
+        handleAllClearButtonClick();
     }
 }
 
@@ -102,5 +119,21 @@ function handleOperatorButtonClick(button) {
             operandTwo = null;
         }
     }
+}
 
+/* clearing */
+
+function handleClearEntryButtonClick() {
+    if (operandTwo !== null) {
+        operandTwo = null;
+    } else {
+        operandOne = null;
+        operator = null;
+    }
+}
+
+function handleAllClearButtonClick() {
+    operator = null;
+    operandOne = null;
+    operandTwo = null;
 }
