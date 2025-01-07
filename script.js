@@ -29,7 +29,10 @@ function operate(operandOne, operator, operandTwo) {
 
 const allOperands = document.querySelectorAll(".operand");
 
-allOperands.forEach((button) => button.addEventListener("click", () => populateCurrentDisplay(button)));
+allOperands.forEach((button) => button.addEventListener("click", () => {
+    populateCurrentDisplay(button);
+    handleButtonClick(button);
+}));
 
 function populateCurrentDisplay(input) {
     if (typeof input !== "number") {
@@ -37,4 +40,25 @@ function populateCurrentDisplay(input) {
     }
     const currentDisplay = document.querySelector(".display .current");
     currentDisplay.textContent = input;
+}
+
+function handleButtonClick (button) {
+    if (button.classList.contains("operand")) {
+        handleOperandButtonClick(button);
+    } else if (button.classList.contains("operator")) {
+        handleOperatorButtonClick(button);
+    } else if (button.classList.contains("equal")) {
+        handleEqualButtonClick(button);
+    }
+}
+
+function handleOperandButtonClick(button) {
+    const operandValue = Number(button.textContent);
+    if (operator === null) {
+        const newDigitAddedToOperand = operandOne * 10 + operandValue;
+        operandOne = newDigitAddedToOperand;
+    } else {
+        const newDigitAddedToOperand = operandTwo * 10 + operandValue;
+        operandTwo = newDigitAddedToOperand;
+    }
 }
