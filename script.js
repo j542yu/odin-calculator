@@ -35,8 +35,8 @@ allOperands.forEach((button) => button.addEventListener("click", () => {
 }));
 
 function populateCurrentDisplay(input) {
-    if (typeof input !== "number") {
-        input = Number(input.textContent);
+    if (typeof input !== "string") {
+        input = input.value;
     }
     const currentDisplay = document.querySelector(".display .current");
     currentDisplay.textContent = input;
@@ -53,7 +53,7 @@ function handleButtonClick (button) {
 }
 
 function handleOperandButtonClick(button) {
-    const operandValue = Number(button.textContent);
+    const operandValue = Number(button.value);
     if (operator === null) {
         const newDigitAddedToOperand = operandOne * 10 + operandValue;
         operandOne = newDigitAddedToOperand;
