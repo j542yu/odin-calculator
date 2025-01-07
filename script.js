@@ -67,12 +67,19 @@ function populateCurrentDisplay(error = false) {
         } else {
             value = operandTwo ?? operandOne;
         }
+        value = roundNumber(value, 4);
     } else {
         value = "woah there...";
     }
 
     const currentDisplay = document.querySelector(".display .current");
     currentDisplay.textContent = value;
+}
+
+function roundNumber(num, decimalPlaces = 0) {
+    const scalingFactor = Math.pow(10, decimalPlaces);
+    const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
+    return Math.round(adjustedNum) / scalingFactor;
 }
 
 /* calculation button handlers */
