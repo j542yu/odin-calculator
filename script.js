@@ -1,3 +1,4 @@
+/* operator functions */
 function add(a, b) {
     return Number(a) + Number(b);
 }
@@ -19,17 +20,35 @@ function divide(dividend, divisor) {
     }
 }
 
+/* button handlers */
+
 let operator = null;
 let operandOne = null;
 let operandTwo = null;
 
 function operate(operandOne, operator, operandTwo) {
+    if (typeof operator === "string") {
+        switch (operator) {
+            case "add":
+                operator = add;
+                break;
+            case "subtract":
+                operator = subtract;
+                break;
+            case "multiply":
+                operator = multiply;
+                break;
+            case "divide":
+                operator = divide;
+                break;
+        }
+    }
     return operator(operandOne, operandTwo);
 }
 
-const allOperands = document.querySelectorAll(".operand");
+const allButtons = document.querySelectorAll("button");
 
-allOperands.forEach((button) => button.addEventListener("click", () => {
+allButtons.forEach((button) => button.addEventListener("click", () => {
     handleButtonClick(button);
     populateCurrentDisplay();
 }));
@@ -37,9 +56,9 @@ allOperands.forEach((button) => button.addEventListener("click", () => {
 function populateCurrentDisplay() {
     let value;
     if (operator === null) {
-        value = operandOne;
+        value = operandOne || 0;
     } else {
-        value = operandTwo;
+        value = operandTwo || operandOne;
     }
     const currentDisplay = document.querySelector(".display .current");
     currentDisplay.textContent = value;
@@ -48,15 +67,16 @@ function populateCurrentDisplay() {
 function handleButtonClick (button) {
     if (button.classList.contains("operand")) {
         handleOperandButtonClick(button);
+        console.log(`operand ${button.value} was clicked`);
     } else if (button.classList.contains("operator")) {
         handleOperatorButtonClick(button);
-    } else if (button.classList.contains("equal")) {
-        handleEqualButtonClick(button);
+        console.log(`operator ${button.value} was clicked`);
     }
 }
 
 function handleOperandButtonClick(button) {
     const operandValue = Number(button.value);
+
     if (operator === null) {
         const newDigitAddedToOperand = operandOne * 10 + operandValue;
         operandOne = newDigitAddedToOperand;
@@ -64,4 +84,23 @@ function handleOperandButtonClick(button) {
         const newDigitAddedToOperand = operandTwo * 10 + operandValue;
         operandTwo = newDigitAddedToOperand;
     }
+}
+
+function handleOperatorButtonClick(button) {
+    let ignoreOperatorInput = false
+    if (operandOne === null) ignoreOperatorInput = true;
+
+    if (!ignoreOperatorInput) {
+        const operatorValue = button.value;
+
+        if (operandTwo === null) operator = operatorValue;
+        else {
+            // operator should not be null as otherwise operandTwo would also be null
+            const previousCalculationResult = operate (operandOne, operator, operandTwo);
+            operandOne = previousCalculationResult;
+            operator = operatorValue;
+            operandTwo = null;
+        }
+    }
+
 }
