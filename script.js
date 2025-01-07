@@ -30,16 +30,19 @@ function operate(operandOne, operator, operandTwo) {
 const allOperands = document.querySelectorAll(".operand");
 
 allOperands.forEach((button) => button.addEventListener("click", () => {
-    populateCurrentDisplay(button);
     handleButtonClick(button);
+    populateCurrentDisplay();
 }));
 
-function populateCurrentDisplay(input) {
-    if (typeof input !== "string") {
-        input = input.value;
+function populateCurrentDisplay() {
+    let value;
+    if (operator === null) {
+        value = operandOne;
+    } else {
+        value = operandTwo;
     }
     const currentDisplay = document.querySelector(".display .current");
-    currentDisplay.textContent = input;
+    currentDisplay.textContent = value;
 }
 
 function handleButtonClick (button) {
