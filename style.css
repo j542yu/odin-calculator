@@ -1,0 +1,52 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.calculator button {
+    font-size: 1.5em;
+    flex-grow: 1;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    width: 12vh;
+    margin: 1vh;
+}
+
+.one button {
+    background-color: #edfff0;
+}
+
+.two button {
+    background-color: #bcedc5;
+}
+
+.three button {
+    background-color: #9ccfa6;
+}
+
+.four button {
+    background-color: #86ab8d;
+}
+
+.five button {
+    background-color: #627c67;
+}
+
+.warning {
+    white-space: pre-wrap;
+}
