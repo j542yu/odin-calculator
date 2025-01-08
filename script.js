@@ -78,8 +78,7 @@ function populateCurrentDisplay(error = false) {
         } else {
             value = operandTwo ?? operandOne;
         }
-        const digitsInDisplay = 10;
-        value = roundNumber(value, digitsInDisplay);
+        value = roundNumber(value);
     } else {
         value = "woah there...";
     }
@@ -92,10 +91,8 @@ function populateExpressionDisplay() {
     const expressionDisplay = document.querySelector(".display .expression");
     let expression = 'Start calculating!';
 
-    const digitsInDisplay = 4;
-
     if (operandOne !== null) {
-        expression = roundNumber(operandOne, digitsInDisplay);
+        expression = roundNumber(operandOne);
     }
 
     if ((binaryOperator !== null) && (binaryOperator !== "equal")) {
@@ -119,13 +116,15 @@ function populateExpressionDisplay() {
     }
 
     if (operandTwo !== null) {
-        expression += ' ' + roundNumber(operandTwo, digitsInDisplay);
+        expression += ' ' + roundNumber(operandTwo);
     }
 
     expressionDisplay.textContent = expression;
 }
 
-function roundNumber(num, digitsInDisplay) {
+const digitsInDisplay = 10;
+
+function roundNumber(num) {
     function digitsBeforeDecimal(num) {
         if (num < 0) num = -num;
         
@@ -137,10 +136,36 @@ function roundNumber(num, digitsInDisplay) {
         return (result > 1) ? result : 1;
     }
 
-    const decimalPlaces = digitsInDisplay - digitsBeforeDecimal();
+    if (typeof num !== "number") num = Number(num);
+
+    let decimalPlaces = digitsInDisplay - digitsBeforeDecimal(num);
     const scalingFactor = Math.pow(10, decimalPlaces);
+
     const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
-    return Math.round(adjustedNum) / scalingFactor;
+    let roundedNum = Math.round(adjustedNum) / scalingFactor;
+
+    if (String(roundedNum).length > digitsInDisplay) {
+        decimalPlaces = digitsInDisplay - 4;
+        roundedNum = roundedNum.toExponential(decimalPlaces);
+
+        giveWarning(`Heyo! ${roundedNum} is too long and will be converted to exponentional form. Accuracy will be lost.`);
+    }
+
+    return roundedNum;
+}
+
+const warningBox = document.querySelector(".warning");
+
+function giveWarning(message) {
+    warningBox.textContent = `Warning:\n ${message}\n`;
+
+    const confirmButton = document.createElement("button");
+    confirmButton.classList.add("confirm");
+    confirmButton.textContent = "OK";
+
+    confirmButton.addEventListener("click", () => warningBox.textContent ='');
+
+    warningBox.appendChild(confirmButton);
 }
 
 /* unary operator handler */
@@ -200,16 +225,36 @@ function handleOperandButtonClick(button) {
     }
 }
 
+function isTooLong (num) {
+    if (typeof num === "number") num = String(num);
+    return num.length >= digitsInDisplay;
+}
+
+function isInteger (num) {
+    if (typeof num !== "number") num = Number(num);
+    return Math.floor(num) === num;
+}
+
 function addNewDigitToOperand (operand, newValue) {
+
     if (operand === null) {
         return newValue;
     } else {
-        operand = String(operand);
-        newValue = String(newValue);
-        
-        operand = operand + newValue;
-        
-        operand = Number(operand);
+        if (typeof operand === "number") operand = String(operand);
+
+        if (isTooLong(operand)) {
+            switch (isInteger(operand)){
+                case true:
+                    operand = Number(operand) * 10 + Number(newValue);
+                    operand = roundNumber(operand);
+                    break;
+                case false:
+                    giveWarning("You can't add anymore digits... it's too long!");
+            }
+        } else {
+            if (typeof newValue === "number") newValue = String(newValue);
+            operand = operand + newValue;
+        }
     }
 
     return operand;
@@ -246,10 +291,12 @@ function handleClearEntryButtonClick() {
         operandOne = null;
         binaryOperator = null;
     }
+    warningBox.textContent =''
 }
 
 function handleAllClearButtonClick() {
     binaryOperator = null;
     operandOne = null;
     operandTwo = null;
+    warningBox.textContent =''
 }
