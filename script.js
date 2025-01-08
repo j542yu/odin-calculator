@@ -1,4 +1,4 @@
-/* operator functions */
+/* binary operator functions */
 function add(a, b) {
     return Number(a) + Number(b);
 }
@@ -20,36 +20,44 @@ function divide(dividend, divisor) {
     }
 }
 
-let operator = null;
+/* unary operator functions*/
+function percent(a) {
+    return Number(a)/100;
+}
+
+function changeSign(a) {
+    return -Number(a);
+}
+
+////////////////////////////////////////////////
+
+let unaryOperator = null;
+let binaryOperator = null;
 let operandOne = null;
 let operandTwo = null;
 
-function operate(operandOne, operator, operandTwo) {
-    if (typeof operator === "string") {
-        switch (operator) {
-            case "add":
-                operator = add;
-                break;
-            case "subtract":
-                operator = subtract;
-                break;
-            case "multiply":
-                operator = multiply;
-                break;
-            case "divide":
-                operator = divide;
-                break;
-        }
+function binaryOperate(operandOne, binaryOperator, operandTwo) {
+    switch (binaryOperator) {
+        case "add":
+            return add(operandOne, operandTwo);
+        case "subtract":
+            return subtract(operandOne, operandTwo);
+        case "multiply":
+            return multiply(operandOne, operandTwo);
+        case "divide":
+            return divide(operandOne, operandTwo);
+        case "equal":
+            break;
     }
-    return operator(operandOne, operandTwo);
+    console.log(`No matching function found for ${binaryOperator}`);
 }
 
 const allButtons = document.querySelectorAll("button");
 
 allButtons.forEach((button) => button.addEventListener("click", () => {
-    if ((operandTwo === 0) && (operator === "divide")) {
-        populateCurrentDisplay(true);
+    if ((operandTwo === 0) && (binaryOperator === "divide")) {
         handleAllClearButtonClick();
+        populateCurrentDisplay(true);
     } else {
         handleButtonClick(button);
         populateCurrentDisplay(false);
@@ -62,7 +70,7 @@ function populateCurrentDisplay(error = false) {
     let value;
 
     if (!error) {
-        if (operator === null) {
+        if (binaryOperator === null) {
             value = operandOne ?? 0;
         } else {
             value = operandTwo ?? operandOne;
@@ -82,15 +90,43 @@ function roundNumber(num, decimalPlaces = 0) {
     return Math.round(adjustedNum) / scalingFactor;
 }
 
+/* unary operator handler */
+
+function handleUnaryOperatorClick(button) {
+    if (operandTwo === null) { 
+        operandOne = unaryModifyOperand(button, operandOne)
+    } {
+        operandTwo = unaryModifyOperand(button, operandTwo);
+    }
+}
+
+function unaryModifyOperand(button, operand) {
+    const operatorValue = button.value;
+    if (operatorValue === "change-sign") {
+        operand = changeSign(operand);
+        console.log(`unaryOperator ${operatorValue} was clicked`);
+    } else if (operatorValue === "percent") {
+        operand = percent(operand);
+        console.log(`unaryOperator ${operatorValue} was clicked`);
+    }
+    return operand;
+}
+
 /* calculation button handlers */
 
 function handleButtonClick (button) {
     if (button.classList.contains("operand")) {
         handleOperandButtonClick(button);
         console.log(`operand ${Number(button.value)} was clicked`);
-    } else if (button.classList.contains("operator")) {
-        handleOperatorButtonClick(button);
-        console.log(`operator ${button.value} was clicked`);
+    } else if (button.classList.contains("unary-operator")) {
+        if (operandTwo === null) { 
+            operandOne = unaryModifyOperand(button, operandOne)
+        } else {
+            operandTwo = unaryModifyOperand(button, operandTwo);
+        }
+    } else if (button.classList.contains("binary-operator")) {
+        handleBinaryOperatorButtonClick(button);
+        console.log(`binaryOperator ${button.value} was clicked`);
     } else if (button.classList.contains("CE")) {
         handleClearEntryButtonClick();
     } else if (button.classList.contains("AC")) {
@@ -101,32 +137,49 @@ function handleButtonClick (button) {
 function handleOperandButtonClick(button) {
     const operandValue = Number(button.value);
 
-    if (operator === null) {
-        const newDigitAddedToOperand = operandOne * 10 + operandValue;
-        operandOne = newDigitAddedToOperand;
+    if (binaryOperator === null) {
+        operandOne = addNewDigitToOperand(operandOne, operandValue);
     } else {
-        const newDigitAddedToOperand = operandTwo * 10 + operandValue;
-        operandTwo = newDigitAddedToOperand;
+        operandTwo = addNewDigitToOperand(operandTwo, operandValue);
     }
 }
 
-function handleOperatorButtonClick(button) {
-    let ignoreOperatorInput = false
-    if (operandOne === null) ignoreOperatorInput = true;
+function addNewDigitToOperand (operand, newValue) {
+    if (operand === null) {
+        return newValue;
+    } else {
+        operand = String(operand);
+        newValue = String(newValue);
+        
+        operand = operand + newValue;
+        
+        operand = Number(operand);
+    }
 
-    if (!ignoreOperatorInput) {
-        const operatorValue = button.value;
+    return operand;
+}
 
-        if (operandTwo === null) operator = operatorValue;
+function handleBinaryOperatorButtonClick(button) {
+    let ignoreBinaryOperatorInput = false
+    if (operandOne === null) ignoreBinaryOperatorInput = true;
+
+    if (!ignoreBinaryOperatorInput) {
+        const binaryOperatorValue = button.value;
+
+        if (operandTwo === null) binaryOperator = binaryOperatorValue;
         else {
-            // operator should not be null as otherwise operandTwo would also be null
-            const previousCalculationResult = operate (operandOne, operator, operandTwo);
+            // binaryOperator should not be null as otherwise operandTwo would also be null
+            const previousCalculationResult = binaryOperate (operandOne, binaryOperator, operandTwo);
             operandOne = previousCalculationResult;
-            operator = operatorValue;
+            binaryOperator = binaryOperatorValue;
             operandTwo = null;
         }
     }
 }
+
+/* mapping keys to operand and binaryOperator buttons */ 
+
+
 
 /* clearing */
 
@@ -135,12 +188,12 @@ function handleClearEntryButtonClick() {
         operandTwo = null;
     } else {
         operandOne = null;
-        operator = null;
+        binaryOperator = null;
     }
 }
 
 function handleAllClearButtonClick() {
-    operator = null;
+    binaryOperator = null;
     operandOne = null;
     operandTwo = null;
 }
