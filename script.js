@@ -78,7 +78,8 @@ function populateCurrentDisplay(error = false) {
         } else {
             value = operandTwo ?? operandOne;
         }
-        value = roundNumber(value, 4);
+        const digitsInDisplay = 10;
+        value = roundNumber(value, digitsInDisplay);
     } else {
         value = "woah there...";
     }
@@ -87,18 +88,14 @@ function populateCurrentDisplay(error = false) {
     currentDisplay.textContent = value;
 }
 
-function roundNumber(num, decimalPlaces = 0) {
-    const scalingFactor = Math.pow(10, decimalPlaces);
-    const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
-    return Math.round(adjustedNum) / scalingFactor;
-}
-
 function populateExpressionDisplay() {
     const expressionDisplay = document.querySelector(".display .expression");
     let expression = 'Start calculating!';
 
+    const digitsInDisplay = 4;
+
     if (operandOne !== null) {
-        expression = operandOne;
+        expression = roundNumber(operandOne, digitsInDisplay);
     }
 
     if ((binaryOperator !== null) && (binaryOperator !== "equal")) {
@@ -122,10 +119,28 @@ function populateExpressionDisplay() {
     }
 
     if (operandTwo !== null) {
-        expression += ' ' + operandTwo;
+        expression += ' ' + roundNumber(operandTwo, digitsInDisplay);
     }
 
     expressionDisplay.textContent = expression;
+}
+
+function roundNumber(num, digitsInDisplay) {
+    function digitsBeforeDecimal(num) {
+        if (num < 0) num = -num;
+        
+        let result = 0;
+        
+        for (let i = num; i >= 1; i /= 10) {
+            ++result;
+        }
+        return (result > 1) ? result : 1;
+    }
+
+    const decimalPlaces = digitsInDisplay - digitsBeforeDecimal();
+    const scalingFactor = Math.pow(10, decimalPlaces);
+    const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
+    return Math.round(adjustedNum) / scalingFactor;
 }
 
 /* unary operator handler */
