@@ -36,6 +36,8 @@ let binaryOperator = null;
 let operandOne = null;
 let operandTwo = null;
 
+populateExpressionDisplay();
+
 function binaryOperate(operandOne, binaryOperator, operandTwo) {
     switch (binaryOperator) {
         case "add":
@@ -62,6 +64,7 @@ allButtons.forEach((button) => button.addEventListener("click", () => {
         handleButtonClick(button);
         populateCurrentDisplay(false);
     }
+    populateExpressionDisplay();
 }));
 
 /* display */
@@ -88,6 +91,41 @@ function roundNumber(num, decimalPlaces = 0) {
     const scalingFactor = Math.pow(10, decimalPlaces);
     const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
     return Math.round(adjustedNum) / scalingFactor;
+}
+
+function populateExpressionDisplay() {
+    const expressionDisplay = document.querySelector(".display .expression");
+    let expression = 'Start calculating!';
+
+    if (operandOne !== null) {
+        expression = operandOne;
+    }
+
+    if ((binaryOperator !== null) && (binaryOperator !== "equal")) {
+
+        let binaryOperatorSymbol;
+        switch (binaryOperator) {
+            case "add":
+                binaryOperatorSymbol = "+";
+                break;
+            case "subtract":
+                binaryOperatorSymbol = "−";
+                break;
+            case "multiply":
+                binaryOperatorSymbol = "×";
+                break;
+            case "divide":
+                binaryOperatorSymbol = "÷";
+        }
+
+        expression += ' ' + binaryOperatorSymbol;
+    }
+
+    if (operandTwo !== null) {
+        expression += ' ' + operandTwo;
+    }
+
+    expressionDisplay.textContent = expression;
 }
 
 /* unary operator handler */
@@ -138,6 +176,9 @@ function handleOperandButtonClick(button) {
     const operandValue = Number(button.value);
 
     if (binaryOperator === null) {
+        operandOne = addNewDigitToOperand(operandOne, operandValue);
+    } else if (binaryOperator === "equal") {
+        operandOne = null;
         operandOne = addNewDigitToOperand(operandOne, operandValue);
     } else {
         operandTwo = addNewDigitToOperand(operandTwo, operandValue);
