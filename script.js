@@ -66,6 +66,8 @@ allButtons.forEach((button) => button.addEventListener("click", () => {
     populateExpressionDisplay();
 
     validateDecimalButton();
+
+    addShadowToButton(button);
 }));
 
 function validateDecimalButton() {
@@ -75,6 +77,13 @@ function validateDecimalButton() {
     } else {
         decimalButton.disabled = false;
     }
+}
+
+function addShadowToButton(button) {
+    button.classList.add('active');
+    setTimeout(() => {
+        button.classList.remove('active');
+    }, 200);
 }
 
 /* display */

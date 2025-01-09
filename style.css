@@ -67,11 +67,20 @@ body {
     border-radius: 0 0 5px 5px;
 }
 
+.one button,
+.two button,
+.three button,
+.four button,
+.five button {
+    transition: box-shadow 0.1s ease;
+}
+
 .one button {
     background-color: #edfff0;
 }
 
-.one button:hover {
+.one button:hover,
+.one button.active {
     box-shadow: #c4dfc9 5px 5px;
 }
 
@@ -79,7 +88,8 @@ body {
     background-color: #bcedc5;
 }
 
-.two button:hover {
+.two button:hover,
+.two button.active {
     box-shadow: #9ccca5 5px 5px;
 }
 
@@ -87,7 +97,8 @@ body {
     background-color: #9ccfa6;
 }
 
-.three button:hover {
+.three button:hover,
+.three button.active {
     box-shadow: #75a87f 5px 5px;
 }
 
@@ -95,7 +106,8 @@ body {
     background-color: #86ab8d;
 }
 
-.four button:hover {
+.four button:hover,
+.four button.active {
     box-shadow: #578260 5px 5px;
 }
 
@@ -103,7 +115,8 @@ body {
     background-color: #627c67;
 }
 
-.five button:hover {
+.five button:hover,
+.five button.active {
     box-shadow: #2d4f35 5px 5px;
 }
 
