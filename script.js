@@ -169,15 +169,23 @@ function roundNumber(num) {
     }
 }
 
-const warningBox = document.querySelector(".warning");
+let warningBox = document.querySelector(".warning");
 
 function giveWarning(message) {
+    const body = document.body;
+    
+    if (warningBox === null) {
+        warningBox = document.createElement("div");
+        warningBox.classList.add("warning");
+        body.appendChild(warningBox);
+    }
+
     warningBox.textContent = `Warning:\n${message}\n`;
 
     const confirmButton = document.createElement("button");
     confirmButton.textContent = "OK";
 
-    confirmButton.addEventListener("click", () => warningBox.textContent ='');
+    confirmButton.addEventListener("click", () => body.removeChild(warningBox));
 
     warningBox.appendChild(confirmButton);
 }
@@ -334,12 +342,12 @@ function handleClearEntryButtonClick() {
         operandOne = null;
         binaryOperator = null;
     }
-    warningBox.textContent =''
+    if (warningBox !== null) warningBox.textContent = '';
 }
 
 function handleAllClearButtonClick() {
     binaryOperator = null;
     operandOne = null;
     operandTwo = null;
-    warningBox.textContent =''
+    if (warningBox !== null) warningBox.textContent = '';
 }
