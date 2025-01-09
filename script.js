@@ -53,7 +53,7 @@ function binaryOperate(operandOne, binaryOperator, operandTwo) {
         case "equal":
             break;
     }
-    console.log(`No matching function found for ${binaryOperator}`);
+    // console.log(`No matching function found for ${binaryOperator}`);
 }
 
 const allButtons = document.querySelectorAll("button");
@@ -187,12 +187,12 @@ function giveWarning(message) {
 
     confirmButton.addEventListener("click", () => {
         removeWarning()
-        console.log("user closed warning popup");
+        // console.log("user closed warning popup");
     });
 
     warningBox.appendChild(confirmButton);
 
-    console.log("warning popup appeared");
+    // console.log("warning popup appeared");
 }
 
 /* unary operator handler */
@@ -212,7 +212,7 @@ function unaryModifyOperand(button, operand) {
     } else if (operatorValue === "percent") {
         operand = percent(operand);
     }
-    console.log(`unaryOperator ${operatorValue} was clicked`);
+    // console.log(`unaryOperator ${operatorValue} was clicked`);
     return operand;
 }
 
@@ -221,7 +221,7 @@ function unaryModifyOperand(button, operand) {
 function handleButtonClick (button) {
     if (button.classList.contains("operand")) {
         handleOperandButtonClick(button);
-        console.log(`operand ${Number(button.value)} was clicked`);
+        // console.log(`operand ${Number(button.value)} was clicked`);
     } else if (button.classList.contains("unary-operator")) {
         if (operandTwo === null) { 
             operandOne = unaryModifyOperand(button, operandOne)
@@ -230,16 +230,16 @@ function handleButtonClick (button) {
         }
     } else if (button.classList.contains("binary-operator")) {
         handleBinaryOperatorButtonClick(button);
-        console.log(`binaryOperator ${button.value} was clicked`);
+        // console.log(`binaryOperator ${button.value} was clicked`);
     } else if (button.classList.contains("CE")) {
         handleClearEntryButtonClick();
-        console.log(`the current operand was cleared`);
+        // console.log(`the current operand was cleared`);
     } else if (button.classList.contains("AC")) {
         handleAllClearButtonClick();
-        console.log(`all cleared`);
+        // console.log(`all cleared`);
     } else if (button.classList.contains("decimal")) {
         (binaryOperator !== null) ? operandTwo = addDecimal(operandTwo) : operandOne = addDecimal(operandOne);
-        console.log(`a decimal point was added`);
+        // console.log(`a decimal point was added`);
     }
 }
 
@@ -338,6 +338,8 @@ function hasUserInputDecimalPoint() {
 document.addEventListener('keydown', (e) => {
     let keyboardKey = null;
 
+    // console.log(`${e.key} was pressed on keyboard`);
+
     if (e.shiftKey) {
         if (e.key === "5") {
             keyboardKey = document.querySelector(`button[data-key='%']`);
@@ -345,7 +347,9 @@ document.addEventListener('keydown', (e) => {
             keyboardKey = document.querySelector(`button[data-key='*']`);
         } else if (e.key === "Equal") {
             keyboardKey = document.querySelector(`button[data-key='+']`);
-        } 
+        } else if (e.key === "_") { // minus key becomes underscore with shift
+            keyboardKey = document.querySelector(`button[data-key='+/-']`);
+        }
     }
 
     if (e.key === "Enter") {
