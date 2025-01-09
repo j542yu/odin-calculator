@@ -92,7 +92,7 @@ function populateExpressionDisplay() {
     let expression = 'Start calculating!';
 
     if (operandOne !== null) {
-        expression = roundNumber(operandOne);
+        expression = `Calculating: ${roundNumber(operandOne)}`;
     }
 
     if ((binaryOperator !== null) && (binaryOperator !== "equal")) {
@@ -122,7 +122,7 @@ function populateExpressionDisplay() {
     expressionDisplay.textContent = expression;
 }
 
-const digitsInDisplay = 10;
+const digitsInDisplay = 15;
 
 function roundNumber(num) {
     function digitsBeforeDecimal(num) {
@@ -145,7 +145,7 @@ function roundNumber(num) {
     let roundedNum = Math.round(adjustedNum) / scalingFactor;
 
     if (String(roundedNum).length > digitsInDisplay) {
-        decimalPlaces = digitsInDisplay - 4;
+        decimalPlaces = digitsInDisplay - 6;
         roundedNum = roundedNum.toExponential(decimalPlaces);
 
         giveWarning(`Heyo! ${roundedNum} is too long and will be converted to exponentional form. Accuracy will be lost.`);
@@ -157,10 +157,9 @@ function roundNumber(num) {
 const warningBox = document.querySelector(".warning");
 
 function giveWarning(message) {
-    warningBox.textContent = `Warning:\n ${message}\n`;
+    warningBox.textContent = `Warning:\n${message}\n`;
 
     const confirmButton = document.createElement("button");
-    confirmButton.classList.add("confirm");
     confirmButton.textContent = "OK";
 
     confirmButton.addEventListener("click", () => warningBox.textContent ='');
