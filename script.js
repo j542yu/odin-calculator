@@ -36,6 +36,8 @@ let binaryOperator = null;
 let operandOne = null;
 let operandTwo = null;
 
+let hasError = false;
+
 populateExpressionDisplay();
 
 function binaryOperate(operandOne, binaryOperator, operandTwo) {
@@ -57,22 +59,30 @@ function binaryOperate(operandOne, binaryOperator, operandTwo) {
 const allButtons = document.querySelectorAll("button");
 
 allButtons.forEach((button) => button.addEventListener("click", () => {
-    if ((operandTwo === 0) && (binaryOperator === "divide")) {
-        handleAllClearButtonClick();
-        populateCurrentDisplay(true);
-    } else {
-        handleButtonClick(button);
-        populateCurrentDisplay(false);
-    }
+    hasError = false;
+    handleButtonClick(button);
+
+    populateCurrentDisplay();
     populateExpressionDisplay();
+
+    validateDecimalButton();
 }));
+
+function validateDecimalButton() {
+    const decimalButton = document.querySelector(".decimal");
+    if (hasUserInputDecimalPoint()) {
+        decimalButton.disabled = true;
+    } else {
+        decimalButton.disabled = false;
+    }
+}
 
 /* display */
 
-function populateCurrentDisplay(error = false) {
+function populateCurrentDisplay() {
     let value;
 
-    if (!error) {
+    if (!hasError) {
         if (binaryOperator === null) {
             value = operandOne ?? 0;
         } else {
@@ -81,6 +91,7 @@ function populateCurrentDisplay(error = false) {
         value = roundNumber(value);
     } else {
         value = "woah there...";
+        handleAllClearButtonClick();
     }
 
     const currentDisplay = document.querySelector(".display .current");
@@ -136,22 +147,26 @@ function roundNumber(num) {
         return (result > 1) ? result : 1;
     }
 
-    if (typeof num !== "number") num = Number(num);
+    if (!hasUserInputDecimalPoint()) { // don't round off trailing zeros if user is inputting
+        if (typeof num !== "number") num = Number(num);
 
-    let decimalPlaces = digitsInDisplay - digitsBeforeDecimal(num);
-    const scalingFactor = Math.pow(10, decimalPlaces);
+        let decimalPlaces = digitsInDisplay - digitsBeforeDecimal(num);
+        const scalingFactor = Math.pow(10, decimalPlaces);
 
-    const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
-    let roundedNum = Math.round(adjustedNum) / scalingFactor;
+        const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
+        let roundedNum = Math.round(adjustedNum) / scalingFactor;
 
-    if (String(roundedNum).length > digitsInDisplay) {
-        decimalPlaces = digitsInDisplay - 6;
-        roundedNum = roundedNum.toExponential(decimalPlaces);
+        if (String(roundedNum).length > digitsInDisplay) {
+            decimalPlaces = digitsInDisplay - 6;
+            roundedNum = roundedNum.toExponential(decimalPlaces);
 
-        giveWarning(`Heyo! ${roundedNum} is too long and will be converted to exponentional form. Accuracy will be lost.`);
+            giveWarning(`Heyo! ${roundedNum} is too long and will be converted to exponentional form. Accuracy will be lost.`);
+        }
+        
+        return roundedNum;
+    } else {
+        return num;
     }
-
-    return roundedNum;
 }
 
 const warningBox = document.querySelector(".warning");
@@ -181,11 +196,10 @@ function unaryModifyOperand(button, operand) {
     const operatorValue = button.value;
     if (operatorValue === "change-sign") {
         operand = changeSign(operand);
-        console.log(`unaryOperator ${operatorValue} was clicked`);
     } else if (operatorValue === "percent") {
         operand = percent(operand);
-        console.log(`unaryOperator ${operatorValue} was clicked`);
     }
+    console.log(`unaryOperator ${operatorValue} was clicked`);
     return operand;
 }
 
@@ -206,8 +220,13 @@ function handleButtonClick (button) {
         console.log(`binaryOperator ${button.value} was clicked`);
     } else if (button.classList.contains("CE")) {
         handleClearEntryButtonClick();
+        console.log(`the current operand was cleared`);
     } else if (button.classList.contains("AC")) {
         handleAllClearButtonClick();
+        console.log(`all cleared`);
+    } else if (button.classList.contains("decimal")) {
+        (binaryOperator !== null) ? operandTwo = addDecimal(operandTwo) : operandOne = addDecimal(operandOne);
+        console.log(`a decimal point was added`);
     }
 }
 
@@ -216,9 +235,9 @@ function handleOperandButtonClick(button) {
 
     if (binaryOperator === null) {
         operandOne = addNewDigitToOperand(operandOne, operandValue);
-    } else if (binaryOperator === "equal") {
-        operandOne = null;
-        operandOne = addNewDigitToOperand(operandOne, operandValue);
+    } else if (binaryOperator === "equal") { // assume user is starting new calculation
+        operandOne = addNewDigitToOperand(null, operandValue);
+        binaryOperator = null;
     } else {
         operandTwo = addNewDigitToOperand(operandTwo, operandValue);
     }
@@ -266,6 +285,12 @@ function handleBinaryOperatorButtonClick(button) {
     if (!ignoreBinaryOperatorInput) {
         const binaryOperatorValue = button.value;
 
+        const divideByZero = (Number(operandTwo) === 0) && (binaryOperator === "divide");
+        if (divideByZero && (binaryOperatorValue === "equal")) {
+            hasError = true;
+            return;
+        }
+
         if (operandTwo === null) binaryOperator = binaryOperatorValue;
         else {
             // binaryOperator should not be null as otherwise operandTwo would also be null
@@ -274,6 +299,25 @@ function handleBinaryOperatorButtonClick(button) {
             binaryOperator = binaryOperatorValue;
             operandTwo = null;
         }
+    }
+}
+
+function addDecimal(operand) {
+    if (operand === null) {
+        return "0."; 
+    } else {
+        if (typeof operand === "number") operand = String(operand);
+        return operand + '.';
+    }
+}
+
+function hasUserInputDecimalPoint() {
+    if (operandTwo !== null) {
+        return String(operandTwo).includes('.');
+    } else if (binaryOperator !== null) { // user has yet to enter operandTwo
+        return false;
+    } else {
+        return String(operandOne).includes('.');
     }
 }
 
