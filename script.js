@@ -296,7 +296,8 @@ function handleBinaryOperatorButtonClick(button) {
     if (!ignoreBinaryOperatorInput) {
         const binaryOperatorValue = button.value;
 
-        const divideByZero = (Number(operandTwo) === 0) && (binaryOperator === "divide");
+        // avoid accidentally converting null to 0 by first checking null
+        const divideByZero = (operandTwo !== null) && (Number(operandTwo) === 0) && (binaryOperator === "divide");
         if (divideByZero && (binaryOperatorValue === "equal")) {
             hasError = true;
             return;
@@ -334,7 +335,27 @@ function hasUserInputDecimalPoint() {
 
 /* mapping keys to operand and binaryOperator buttons */ 
 
+document.addEventListener('keydown', (e) => {
+    let keyboardKey = null;
 
+    if (e.shiftKey) {
+        if (e.key === "5") {
+            keyboardKey = document.querySelector(`button[data-key='%']`);
+        } else if (e.key === "8") {
+            keyboardKey = document.querySelector(`button[data-key='*']`);
+        } else if (e.key === "Equal") {
+            keyboardKey = document.querySelector(`button[data-key='+']`);
+        }
+    }
+
+    if (keyboardKey === null) {
+        keyboardKey = document.querySelector(`button[data-key='${e.key}']`);
+    }
+
+    if (keyboardKey) {
+        keyboardKey.click();    
+    }
+});
 
 /* clearing */
 
