@@ -3,6 +3,8 @@
     padding: 0;
     box-sizing: border-box;
     font-family: monospace;
+    background-color: #071707;
+    border-width: 0;
 }
 
 body {
@@ -16,11 +18,24 @@ body {
 .display .current {
     font-size: 3em;
     text-align: right;
-    margin: 1vh 4vh;
+    margin: 0.5vh 4vh;
+    padding: 1vh;
+    background-color: #c4dfc9;
+    box-shadow: #a3c0a8 2px 2px;
 }
 
 .display .expression {
-    margin: 1vh 4vh;
+    margin: 0 4vh;
+    padding: 1vh;
+    background-color: #bcedc5;
+    box-shadow: #a4d8ad 2px 2px;
+}
+
+.display {
+    background-color: #ffffff;
+    padding: 16px 0;
+    border-bottom: 1px solid #0b1709;
+    border-radius: 5px 5px 0 0;
 }
 
 .row {
@@ -30,12 +45,26 @@ body {
 
 .calculator button {
     font-size: 2.5em;
-    flex-grow: 1;
+    flex: 1;
     border-radius: 50%;
     aspect-ratio: 1/1;
     width: 12vh;
     margin: 1vh;
     border: 1px solid #90c990;
+}
+
+.row {
+    background-color: #f3faf4;
+    padding: 0 16px;
+}
+
+.row.one {
+    padding-top: 16px;
+}
+
+.row.five {
+    padding-bottom: 16px;
+    border-radius: 0 0 5px 5px;
 }
 
 .one button {
@@ -86,10 +115,17 @@ body {
     width: 48vh;
     line-height: 1.5;
     margin: 5em;
+    padding: 2em;
+    background-color: #edfff0;
+    border-radius: 5px;
+    border: 1px solid #274d27;
 }
 
 .warning button {
     height: 2em;
     aspect-ratio: 1/1;
-    margin: 1em;
+    margin: 0 2em 0;
+    background-color: #ffffff;
+    border: 1px solid #274d27;
+    border-radius: 2px;
 }
