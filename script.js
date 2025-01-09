@@ -173,7 +173,7 @@ let warningBox = document.querySelector(".warning");
 
 function giveWarning(message) {
     const body = document.body;
-    
+
     if (warningBox === null) {
         warningBox = document.createElement("div");
         warningBox.classList.add("warning");
@@ -185,9 +185,14 @@ function giveWarning(message) {
     const confirmButton = document.createElement("button");
     confirmButton.textContent = "OK";
 
-    confirmButton.addEventListener("click", () => body.removeChild(warningBox));
+    confirmButton.addEventListener("click", () => {
+        removeWarning()
+        console.log("user closed warning popup");
+    });
 
     warningBox.appendChild(confirmButton);
+
+    console.log("warning popup appeared");
 }
 
 /* unary operator handler */
@@ -269,13 +274,11 @@ function addNewDigitToOperand (operand, newValue) {
         if (typeof operand === "number") operand = String(operand);
 
         if (isTooLong(operand)) {
-            switch (isInteger(operand)){
-                case true:
+            if (isInteger(operand)){
                     operand = Number(operand) * 10 + Number(newValue);
                     operand = roundNumber(operand);
-                    break;
-                case false:
-                    giveWarning("You can't add anymore digits... it's too long!");
+            } else {
+                giveWarning("You can't add anymore digits... it's too long!");
             }
         } else {
             if (typeof newValue === "number") newValue = String(newValue);
@@ -342,12 +345,20 @@ function handleClearEntryButtonClick() {
         operandOne = null;
         binaryOperator = null;
     }
-    if (warningBox !== null) warningBox.textContent = '';
+    removeWarning();
 }
 
 function handleAllClearButtonClick() {
     binaryOperator = null;
     operandOne = null;
     operandTwo = null;
-    if (warningBox !== null) warningBox.textContent = '';
+    removeWarning();
+}
+
+function removeWarning() {
+    if (warningBox !== null) {
+        const body = document.body;
+        body.removeChild(warningBox);
+        warningBox = null;
+    }
 }
