@@ -35,26 +35,47 @@ body {
     aspect-ratio: 1/1;
     width: 12vh;
     margin: 1vh;
+    border: 1px solid #90c990;
 }
 
 .one button {
     background-color: #edfff0;
 }
 
+.one button:hover {
+    box-shadow: #c4dfc9 5px 5px;
+}
+
 .two button {
     background-color: #bcedc5;
+}
+
+.two button:hover {
+    box-shadow: #9ccca5 5px 5px;
 }
 
 .three button {
     background-color: #9ccfa6;
 }
 
+.three button:hover {
+    box-shadow: #75a87f 5px 5px;
+}
+
 .four button {
     background-color: #86ab8d;
 }
 
+.four button:hover {
+    box-shadow: #578260 5px 5px;
+}
+
 .five button {
     background-color: #627c67;
+}
+
+.five button:hover {
+    box-shadow: #2d4f35 5px 5px;
 }
 
 .warning {
@@ -64,6 +85,7 @@ body {
     white-space: pre-wrap;
     width: 48vh;
     line-height: 1.5;
+    margin: 1em;
 }
 
 .warning button {
