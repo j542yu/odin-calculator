@@ -70,7 +70,7 @@ allButtons.forEach((button) => button.addEventListener("click", () => {
 
 function validateDecimalButton() {
     const decimalButton = document.querySelector(".decimal");
-    if (hasUserInputDecimalPoint()) {
+    if (hasUserInputDecimalPoint() || (binaryOperator === "equal")) {
         decimalButton.disabled = true;
     } else {
         decimalButton.disabled = false;
@@ -345,7 +345,11 @@ document.addEventListener('keydown', (e) => {
             keyboardKey = document.querySelector(`button[data-key='*']`);
         } else if (e.key === "Equal") {
             keyboardKey = document.querySelector(`button[data-key='+']`);
-        }
+        } 
+    }
+
+    if (e.key === "Enter") {
+        keyboardKey = document.querySelector(`button[data-key='=']`);
     }
 
     if (keyboardKey === null) {
