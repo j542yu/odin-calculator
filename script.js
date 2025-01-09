@@ -136,12 +136,12 @@ function populateExpressionDisplay() {
 const digitsInDisplay = 15;
 
 function roundNumber(num) {
-    function digitsBeforeDecimal(num) {
-        if (num < 0) num = -num;
+    function digitsBeforeDecimal(numToRound) {
+        if (numToRound < 0) numToRound = -numToRound;
         
         let result = 0;
         
-        for (let i = num; i >= 1; i /= 10) {
+        for (let i = numToRound; i >= 1; i /= 10) {
             ++result;
         }
         return (result > 1) ? result : 1;
@@ -156,7 +156,7 @@ function roundNumber(num) {
         const adjustedNum = (num * scalingFactor) * (1 + Number.EPSILON);
         let roundedNum = Math.round(adjustedNum) / scalingFactor;
 
-        if (String(roundedNum).length > digitsInDisplay) {
+        if (isTooLong(roundedNum) && isInteger(roundedNum)) {
             decimalPlaces = digitsInDisplay - 6;
             roundedNum = roundedNum.toExponential(decimalPlaces);
 
