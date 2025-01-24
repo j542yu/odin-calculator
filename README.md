@@ -2,7 +2,9 @@
 ## Overview
 Note: This was created as part of The Odin Project's Foundations course.
 ## Features
+* Keyboard compatible
 * Allows for basic operations: add, subtract, multiply, divide, percentage, change sign
+* User can clear or revise expression using All Clear and Clear Element buttons
 * When multiple operands are used, the first two are calculated before operating with the third operand
 * Two preview screens:
   * One to show current operand
